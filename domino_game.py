@@ -78,24 +78,23 @@ class Game_logic:
         while(self.in_game):
             current_player = self.players[self.turn]
             print("{} turn".format(current_player))
-
+            self.show_current_player_dominoes()
+            #if game is locked
             if self.is_game_locked():
                 print("game is locked, restarting the game")
                 self.reset_round()
                 self.first_move()
 
-            #capicua detection
+            #if is a capicua
             elif len(current_player.dominoes) == 1 and self.can_play_left([current_player.dominoes[0]]) and self.can_play_right([current_player.dominoes[0]]):
-                self.show_current_player_dominoes()
                 self.play_validation()
                 self.show_game_table()
                 print("{} Capicua! + 25 points".format(current_player))
                 current_player.points += 25
                 self.if_anyone_wins_logic()
     
-            #if the current player is able to play
+            #if the current player is able to play with his dominoes
             elif self.can_play(current_player.dominoes):
-                self.show_current_player_dominoes()
                 self.play_validation()
                 self.show_game_table()
                 if len(current_player.dominoes) == 0:
@@ -104,7 +103,6 @@ class Game_logic:
                     self.change_turn()
             #if player is not able to play then refill
             else:
-                self.show_current_player_dominoes()
                 print("you can't play with any domino")
                 if len(self.dominoes) > 0:
                     self.refill()
@@ -285,10 +283,34 @@ class Game_logic:
         self.first_move()
         self.game_loop()
 
-#create game data object
-game_data = Game_data(Player, Domino)
-#create game logic object 
-game_logic = Game_logic(game_data, 50, 2)
-#start the game
-game_logic.game_start()
+
+def number_of_players_validation():
+  while(True):
+    number_of_players = input()
+    if len(number_of_players) == 1 and number_of_players.isdigit() and (int(number_of_players) > 1 and int(number_of_players) < 5):
+      return int(number_of_players)
+    else:
+      print("wrong input")
+
+def points_to_win_validation():
+  while(True):
+    points_to_win = input()
+    if len(points_to_win) > 0 and points_to_win.isdigit() and int(points_to_win) > 0:
+      return int(points_to_win)
+    else:
+      print("Wrong input")
+
+def game_setup():
+    print('how many players are going to play?')
+    number_of_players = number_of_players_validation()
+    print("what's limit of points to win that you want to set?")
+    points_to_win = points_to_win_validation()
+    #create game data object
+    game_data = Game_data(Player, Domino)
+    #create game logic object 
+    game_logic = Game_logic(game_data, points_to_win, number_of_players)
+    #start the game
+    game_logic.game_start()
+
+game_setup()
 
