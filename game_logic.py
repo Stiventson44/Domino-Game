@@ -2,6 +2,7 @@ class Game_logic:
     turn = 0
     game_table = []
     in_game = True
+    dominoes = []
 
     def __init__(self, game_data, points_to_win, number_of_players):
         self.game_data = game_data
@@ -35,6 +36,7 @@ class Game_logic:
                     self.if_anyone_wins_logic()
                 else:
                     self.change_turn()
+
             #if player is not able to play then refill
             else:
                 print("you can't play with any domino")
@@ -134,6 +136,7 @@ class Game_logic:
 
     def play_left(self, domino_index):
         selected_domino = self.players[self.turn].dominoes[domino_index]
+        #if the domino is backwards then flip it and make the move
         if self.game_table[0].top_value == selected_domino.top_value:
             self.flip_domino(selected_domino)
             self.game_table.insert(0, selected_domino)
@@ -144,6 +147,7 @@ class Game_logic:
 
     def play_right(self, domino_index):
         selected_domino = self.players[self.turn].dominoes[domino_index]
+        #if the domino is backwards then flip it and make the move
         if self.game_table[-1].bottom_value == selected_domino.bottom_value:
             self.flip_domino(selected_domino)
             self.game_table.append(selected_domino)

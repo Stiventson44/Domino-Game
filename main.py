@@ -1,9 +1,15 @@
 import player, domino_tile, game_data as gd, game_logic as gl
 
+def areEnoughPlayers(players_number):
+  if players_number > 1 and players_number < 5:
+    return True
+  else:
+    return False
+
 def number_of_players_validation():
   while(True):
     number_of_players = input()
-    if len(number_of_players) == 1 and number_of_players.isdigit() and (int(number_of_players) > 1 and int(number_of_players) < 5):
+    if len(number_of_players) == 1 and number_of_players.isdigit() and areEnoughPlayers(int(number_of_players)):
       return int(number_of_players)
     else:
       print("wrong input")

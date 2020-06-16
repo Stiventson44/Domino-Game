@@ -1,5 +1,5 @@
 # Domino-Game
-Terminal-based domino game made using python
+Terminal-based domino game made using python, version 3.8.1
 ## Rules
 The rules are based on the informal Dominican domino, the rules may vary depending on the context, in this case the following were taken:
 
@@ -17,3 +17,5 @@ The rules are based on the informal Dominican domino, the rules may vary dependi
 * To select a domino enter the desired number  
 * To play left <kbd>A</kbd>  
 * To play right <kbd>D</kbd>
+## How to run 
+To run the program, execute the main.py file  
