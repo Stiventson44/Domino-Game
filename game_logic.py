@@ -112,23 +112,67 @@ class Game_logic:
             return False
 
     @staticmethod
-    def get_selected_direction():
+    def split_input():
         while(True):
-            direction = input()
-            if len(direction) == 1 and (direction == 'A' or direction == 'D'):
-                return direction 
-            print("wrong input, try again")
+            string = input()
+            if len(string) == 2:
+                domino_num = string[0]
+                side = string[1]
+                return domino_num, side
+            elif len(string) == 3:
+                domino_num = string[0:2]
+                side = string[2]
+                return domino_num, side
+            else:
+                print('wrong input, try again')
+    
+    @staticmethod
+    def side_validation(side):
+        if len(side) == 1 and (side == 'A' or side == 'D' or side == 'a' or side == 'd'):
+            return True
+        print("wrong input, try again")
+        return False
 
-    def get_selected_domino_number(self):
+    def domino_num_validation(self, domino_num):
         player_dominoes = self.players[self.turn].dominoes
-        while(True):
-            domino_selection = input()
-            if len(domino_selection) == 1 and domino_selection.isdigit() and int(domino_selection) <= len(player_dominoes):
-                return int(domino_selection)
-            elif len(domino_selection) == 2 and domino_selection.isdigit() and int(domino_selection) <= len(player_dominoes):
-                return int(domino_selection)
-            print("wrong input, try again")
+        if len(domino_num) == 1 and domino_num.isdigit() and int(domino_num) <= len(player_dominoes):
+            return True
+        elif len(domino_num) == 2 and domino_num.isdigit() and int(domino_num) <= len(player_dominoes):
+            return True
+        print("wrong input, try again")      
+        return False   
 
+    def play_validation(self):
+        while(True):
+            if len(self.game_table) == 0:
+                domino_num = input()
+                side = ''
+                if self.domino_num_validation(domino_num):
+                    domino_index = int(domino_num) - 1
+                    if self.move_validation(domino_index, side):
+                        break
+            else:
+                domino_num, side = self.split_input()
+                if self.domino_num_validation(domino_num) and self.side_validation(side):
+                    domino_index = int(domino_num) - 1
+                    if self.move_validation(domino_index, side):
+                        break
+                
+    def move_validation(self, domino_index, side):
+        selected_domino = self.players[self.turn].dominoes[domino_index]
+        if len(self.game_table) == 0:
+            self.play(domino_index)
+            return True
+        if (side == 'a' or side == 'A') and self.can_play_left([selected_domino]):
+            self.play_left(domino_index)
+            return True
+        elif (side == 'd' or side == 'D') and self.can_play_right([selected_domino]):
+            self.play_right(domino_index)
+            return True
+        else:
+            print("invalid move")
+            return False        
+ 
     @staticmethod
     def flip_domino(domino):
         domino.top_value, domino.bottom_value = \
@@ -159,25 +203,7 @@ class Game_logic:
     def play(self, domino_index):
         self.game_table.append(self.players[self.turn].dominoes[domino_index])
         del self.players[self.turn].dominoes[domino_index]         
-
-    def play_validation(self):
-        while(True):
-            domino_index = self.get_selected_domino_number() - 1
-            selected_domino = self.players[self.turn].dominoes[domino_index]
-            if len(self.game_table) == 0:
-                self.play(domino_index)
-                break
-            else:
-                direction = self.get_selected_direction()
-                if direction == 'A' and self.can_play_left([selected_domino]):
-                    self.play_left(domino_index)
-                    break
-                elif direction == 'D' and self.can_play_right([selected_domino]):
-                    self.play_right(domino_index)
-                    break
-                else:
-                    print("invalid move")
-                
+           
     def show_game_table(self):
         print("Game table: ", end="")
         for domino in self.game_table:
